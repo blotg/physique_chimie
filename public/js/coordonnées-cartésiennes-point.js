@@ -4,8 +4,9 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { createTextLabel, createCoordinateSystem, createOrthographicCamera, resize } from './utils.js';
+import { createTextLabel, createKaTeXLabel, createCoordinateSystem, createOrthographicCamera, resize } from './utils.js';
 
 export function initPointAnimation(containerId) {
     // Scène
@@ -15,11 +16,27 @@ export function initPointAnimation(containerId) {
     // Caméra
     const camera = createOrthographicCamera(600, 400);
 
-    // Renderer
+    // Renderers (WebGL + CSS2D pour KaTeX)
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    document.getElementById(containerId).appendChild(renderer.domElement);
+    const container = document.getElementById(containerId);
+    container.appendChild(renderer.domElement);
 
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.left = '0';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    container.appendChild(labelRenderer.domElement);
+
+    // Taille initiale
     resize(renderer, camera, containerId);
+    const aspect = 4 / 3;
+    const updateLabelRendererSize = () => {
+        const width = container.clientWidth;
+        const height = width / aspect;
+        labelRenderer.setSize(width, height);
+    };
+    updateLabelRendererSize();
 
     // Contrôles
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -44,7 +61,7 @@ export function initPointAnimation(containerId) {
     scene.add(point);
 
     // Label M
-    const pointLabel = createTextLabel('M', '#000000');
+    const pointLabel = createKaTeXLabel('M');
     scene.add(pointLabel);
 
     // Flèches au point M dans les 3 directions
@@ -85,14 +102,14 @@ export function initPointAnimation(containerId) {
     );
     scene.add(arrowZ);
 
-    // Labels pour les flèches
-    const labelEx = createTextLabel('ex', '#000000');
+    // Labels pour les flèches (KaTeX)
+    const labelEx = createKaTeXLabel('\\vec{e}_x');
     scene.add(labelEx);
 
-    const labelEy = createTextLabel('ey', '#000000');
+    const labelEy = createKaTeXLabel('\\vec{e}_y');
     scene.add(labelEy);
 
-    const labelEz = createTextLabel('ez', '#000000');
+    const labelEz = createKaTeXLabel('\\vec{e}_z');
     scene.add(labelEz);
 
     // Lignes de projection en pointillés
@@ -110,7 +127,7 @@ export function initPointAnimation(containerId) {
     lineToX.computeLineDistances();
     scene.add(lineToX);
 
-    const pointLabelX = createTextLabel('x', '#000000');
+    const pointLabelX = createKaTeXLabel('x');
     scene.add(pointLabelX);
 
     // Ligne vers l'axe X (projection sur plan YZ)
@@ -129,7 +146,7 @@ export function initPointAnimation(containerId) {
     lineToY.computeLineDistances();
     scene.add(lineToY);
 
-    const pointLabelY = createTextLabel('y', '#000000');
+    const pointLabelY = createKaTeXLabel('y');
     scene.add(pointLabelY);
 
     // Ligne vers l'axe Z (projection sur plan XY)
@@ -140,7 +157,7 @@ export function initPointAnimation(containerId) {
     lineToZ.computeLineDistances();
     scene.add(lineToZ);
 
-    const pointLabelZ = createTextLabel('z', '#000000');
+    const pointLabelZ = createKaTeXLabel('z');
     scene.add(pointLabelZ);
 
     // Paramètres pour lil-gui
@@ -154,8 +171,8 @@ export function initPointAnimation(containerId) {
     function updatePoint() {
         point.position.set(params.x, params.y, params.z);
         pointLabel.position.set(params.x, params.y + 0.4, params.z + 0.4);
-        pointLabelX.position.set(params.x, -0.3, 0.3);
-        pointLabelY.position.set(0, params.y + 0.3, 0.3);
+        pointLabelX.position.set(params.x, 0, 0.4);
+        pointLabelY.position.set(0, params.y, 0.4);
         pointLabelZ.position.set(0.3, -0.3, params.z);
 
         // Mise à jour des positions des flèches
@@ -201,7 +218,6 @@ export function initPointAnimation(containerId) {
     // Création de l'interface GUI
     const gui = new GUI({ title: 'Coordonnées du point M', autoPlace: false });
 
-    const container = document.getElementById(containerId);
     container.style.position = 'relative';
 
     // Ajouter la GUI directement dans le conteneur du canvas
@@ -211,9 +227,9 @@ export function initPointAnimation(containerId) {
     gui.domElement.style.zIndex = '100';
     container.appendChild(gui.domElement);
 
-    gui.add(params, 'x', -5, 5, 0.1).name('X').onChange(updatePoint);
-    gui.add(params, 'y', -5, 5, 0.1).name('Y').onChange(updatePoint);
-    gui.add(params, 'z', -5, 5, 0.1).name('Z').onChange(updatePoint);
+    gui.add(params, 'x', -5, 5, 0.1).name('x').onChange(updatePoint);
+    gui.add(params, 'y', -5, 5, 0.1).name('y').onChange(updatePoint);
+    gui.add(params, 'z', -5, 5, 0.1).name('z').onChange(updatePoint);
 
     // Initialisation
     updatePoint();
@@ -222,7 +238,8 @@ export function initPointAnimation(containerId) {
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
-        renderer.render(scene, camera);
+    renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
     }
     animate();
 
@@ -230,6 +247,9 @@ export function initPointAnimation(containerId) {
     return { 
         camera, 
         renderer,
-        resize: () => resize(renderer, camera, containerId)
+        resize: () => {
+            resize(renderer, camera, containerId);
+            updateLabelRendererSize();
+        }
     };
 }

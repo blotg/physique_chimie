@@ -29,55 +29,71 @@ export function createTextLabel(text, color = '#000000') {
     return sprite;
 }
 
+export function createKaTeXLabel(latex, { color = '#000000', fontSize = '20px' } = {}) {
+    const div = document.createElement('div');
+    div.className = 'math-label';
+    div.style.color = color;
+    div.style.fontSize = fontSize;
+    div.style.whiteSpace = 'nowrap';
 
-
-/**
- * Crée un axe avec flèche et label
- */
-export function createAxisWithArrow(scene, direction, length, color, labelText) {
-    const end = new THREE.Vector3().copy(direction).multiplyScalar(length);
-
-    // Ligne de l'axe
-    const geometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, 0, 0),
-        end
-    ]);
-    const material = new THREE.LineBasicMaterial({ color });
-    const axis = new THREE.Line(geometry, material);
-    scene.add(axis);
-
-    // Flèche
-    const arrow = new THREE.ConeGeometry(0.1, 0.3, 8);
-    const arrowMesh = new THREE.Mesh(arrow, new THREE.MeshBasicMaterial({ color }));
-    arrowMesh.position.copy(end);
-
-    // Orienter la flèche selon la direction
-    if (direction.x !== 0) {
-        arrowMesh.rotation.z = -Math.PI / 2;
-    } else if (direction.z !== 0) {
-        arrowMesh.rotation.x = Math.PI / 2;
+    // Rendu KaTeX via module ESM importé ci-dessus
+    try {
+        katex.render(latex, div, { throwOnError: false, displayMode: false });
+    } catch (_e) {
+        // Fallback très simple
+        div.textContent = latex;
     }
-    scene.add(arrowMesh);
 
-    // Label
-    const label = createTextLabel(labelText, color);
-    const labelPos = new THREE.Vector3().copy(direction).multiplyScalar(length + 0.5);
-    label.position.copy(labelPos);
-    scene.add(label);
+    const obj = new CSS2DObject(div);
+    return obj;
 }
 
-/**
- * Crée le repère orthonormé (axes X, Y, Z)
- */
 export function createCoordinateSystem(scene, length = 5) {
-    createAxisWithArrow(scene, new THREE.Vector3(1, 0, 0), length, 0x000000, 'x');
-    createAxisWithArrow(scene, new THREE.Vector3(0, 1, 0), length, 0x000000, 'y');
-    createAxisWithArrow(scene, new THREE.Vector3(0, 0, 1), length, 0x000000, 'z');
+    const arrowHeadLength = 0.2;
+    const arrowHeadWidth = 0.15;
+    const arrowX = new THREE.ArrowHelper(
+        new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        length,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowX);
+
+    const labelX = createKaTeXLabel('x');
+    labelX.position.set(length + 0.4, 0, 0);
+    scene.add(labelX);
+
+    const arrowY = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(0, 0, 0),
+        length,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowY);
+
+    const labelY = createKaTeXLabel('y');
+    labelY.position.set(0, length + 0.4, 0);
+    scene.add(labelY);
+
+    const arrowZ = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(0, 0, 0),
+        length,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowZ);
+
+    const labelZ = createKaTeXLabel('z');
+    labelZ.position.set(0, 0, length + 0.4);
+    scene.add(labelZ);
 }
 
-/**
- * Crée une caméra orthographique avec Z vers le haut
- */
 export function createOrthographicCamera() {
     const camera = new THREE.OrthographicCamera(
         -1,
@@ -92,9 +108,6 @@ export function createOrthographicCamera() {
     return camera;
 }
 
-/**
- * Met à jour une caméra orthographique lors du redimensionnement
- */
 export function resizeOrthographicCamera(camera, width, height, frustumSize = 10) {
     const aspect = width / height;
     camera.left = frustumSize * aspect / -2;
