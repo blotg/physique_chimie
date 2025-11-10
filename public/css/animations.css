@@ -97,14 +97,12 @@ canvas {
     font-weight: bold;
 }
 
-#canvas-point,
-#canvas-cube {
+#canvas {
     width: 100%;
-    height: 400px;
 }
 
 /* Responsive mobile */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     #canvas-point,
     #canvas-cube {
         height: 300px;
@@ -128,4 +126,4 @@ canvas {
     #canvas-cube {
         height: 250px;
     }
-}
+} */

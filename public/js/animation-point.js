@@ -24,6 +24,15 @@ export function initPointAnimation(containerId) {
     // Contrôles
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    
+    // Améliorer pour mobile
+    controls.touches = {
+        ONE: THREE.TOUCH.ROTATE,
+        TWO: THREE.TOUCH.DOLLY_PAN
+    };
+    controls.enableZoom = true;
+    controls.enablePan = true;
 
     // Repère
     createCoordinateSystem(scene);
