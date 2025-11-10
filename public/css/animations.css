@@ -1,0 +1,97 @@
+/* Styles pour les animations 3D */
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: auto;
+}
+
+.back-link {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.animation-frame {
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 40px;
+    background: #f8f9fa;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.animation-frame h2 {
+    color: #667eea;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.canvas-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.canvas-container {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background: white;
+}
+
+canvas {
+    display: block;
+}
+
+.controls-panel {
+    min-width: 250px;
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.controls-panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: 500;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+}
+
+.control-group .value-display {
+    display: inline-block;
+    min-width: 60px;
+    text-align: right;
+    color: #667eea;
+    font-weight: bold;
+}
