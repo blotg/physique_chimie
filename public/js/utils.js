@@ -101,9 +101,11 @@ export function resizeOrthographicCamera(camera, width, height, frustumSize = 10
 }
 
 export function resize(renderer, camera, containerId) {
+    const aspect = 4/3;
     const container = document.getElementById(containerId);
     const width = container.clientWidth;
-    const height = container.clientHeight;
+    const height = width/aspect;
+    container.height = height;
 
     renderer.setSize(width, height);
     resizeOrthographicCamera(camera, width, height);

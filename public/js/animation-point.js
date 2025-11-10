@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { createTextLabel, createCoordinateSystem, createOrthographicCamera } from './utils.js';
+import { createTextLabel, createCoordinateSystem, createOrthographicCamera, resize } from './utils.js';
 
 export function initPointAnimation(containerId) {
     // Scène
@@ -17,8 +17,9 @@ export function initPointAnimation(containerId) {
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(600, 400);
     document.getElementById(containerId).appendChild(renderer.domElement);
+
+    resize(renderer, camera, containerId);
 
     // Contrôles
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -132,10 +133,10 @@ export function initPointAnimation(containerId) {
 
     // Création de l'interface GUI
     const gui = new GUI({ title: 'Coordonnées du point M', autoPlace: false });
-    
+
     const container = document.getElementById(containerId);
     container.style.position = 'relative';
-    
+
     // Ajouter la GUI directement dans le conteneur du canvas
     gui.domElement.style.position = 'absolute';
     gui.domElement.style.top = '10px';
