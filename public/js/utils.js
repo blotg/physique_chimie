@@ -100,11 +100,10 @@ export function resizeOrthographicCamera(camera, width, height, frustumSize = 10
     camera.updateProjectionMatrix();
 }
 
-export function resize(renderer, camera, containerId) {
-    const aspect = 4/3;
+export function resize(renderer, camera, containerId, aspect = 4/3) {
     const container = document.getElementById(containerId);
     const width = container.clientWidth;
-    const height = width/aspect;
+    const height = width / aspect;
     container.height = height;
 
     renderer.setSize(width, height);

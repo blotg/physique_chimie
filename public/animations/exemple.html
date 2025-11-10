@@ -40,23 +40,16 @@
     <script type="module">
       import { initPointAnimation } from "/js/animation-point.js";
       import { initCubeAnimation } from "/js/animation-cube.js";
-      import { resizeOrthographicCamera } from "/js/utils.js";
 
       // Initialiser les animations
       const pointAnim = initPointAnimation("canvas-point");
       const cubeAnim = initCubeAnimation("canvas-cube");
 
       // Gestion du redimensionnement
-      // window.addEventListener("resize", () => {
-      //   const width = document.getElementById("canvas-point").clientWidth;
-      //   const height = document.getElementById("canvas-point").clientHeight;
-
-      //   resizeOrthographicCamera(pointAnim.camera, width, height);
-      //   pointAnim.renderer.setSize(width, height);
-
-      //   resizeOrthographicCamera(cubeAnim.camera, width, height);
-      //   cubeAnim.renderer.setSize(width, height);
-      // });
+      window.addEventListener("resize", () => {
+        pointAnim.resize();
+        cubeAnim.resize();
+      });
     </script>
   </body>
 </html>

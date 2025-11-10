@@ -18,7 +18,6 @@ export function initCubeAnimation(containerId) {
     document.getElementById(containerId).appendChild(renderer.domElement);
 
     resize(renderer, camera, containerId);
-    // document.getElementById(containerId).addEventListener("resize", () => resize(renderer, camera, containerId));
 
     // Contrôles
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -119,5 +118,9 @@ export function initCubeAnimation(containerId) {
     animate();
 
     // Retourner les objets pour le redimensionnement
-    return { camera, renderer };
+    return { 
+        camera, 
+        renderer,
+        resize: () => resize(renderer, camera, containerId)
+    };
 }

@@ -160,5 +160,9 @@ export function initPointAnimation(containerId) {
     animate();
 
     // Retourner les objets pour le redimensionnement
-    return { camera, renderer };
+    return { 
+        camera, 
+        renderer,
+        resize: () => resize(renderer, camera, containerId)
+    };
 }
