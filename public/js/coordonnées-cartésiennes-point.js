@@ -85,14 +85,14 @@ export function initPointAnimation(containerId) {
     );
     scene.add(arrowZ);
 
-    // Labels pour les flèches (notation vectorielle avec KaTeX)
-    const labelEx = createMathLabel('\\vec{e}_x', '#000000', 60);
+    // Labels pour les flèches
+    const labelEx = createTextLabel('ex', '#000000');
     scene.add(labelEx);
 
-    const labelEy = createMathLabel('\\vec{e}_y', '#000000', 60);
+    const labelEy = createTextLabel('ey', '#000000');
     scene.add(labelEy);
 
-    const labelEz = createMathLabel('\\vec{e}_z', '#000000', 60);
+    const labelEz = createTextLabel('ez', '#000000');
     scene.add(labelEz);
 
     // Lignes de projection en pointillés
