@@ -47,6 +47,54 @@ export function initPointAnimation(containerId) {
     const pointLabel = createTextLabel('M', '#000000');
     scene.add(pointLabel);
 
+    // Flèches au point M dans les 3 directions
+    const arrowLength = 0.8;
+    const arrowHeadLength = 0.2;
+    const arrowHeadWidth = 0.15;
+    
+    // Flèche dans la direction X (rouge)
+    const arrowX = new THREE.ArrowHelper(
+        new THREE.Vector3(1, 0, 0), // direction
+        new THREE.Vector3(0, 0, 0), // origine (sera mise à jour)
+        arrowLength,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowX);
+
+    // Flèche dans la direction Y (vert)
+    const arrowY = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(0, 0, 0),
+        arrowLength,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowY);
+
+    // Flèche dans la direction Z (bleu)
+    const arrowZ = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(0, 0, 0),
+        arrowLength,
+        0x000000,
+        arrowHeadLength,
+        arrowHeadWidth
+    );
+    scene.add(arrowZ);
+
+    // Labels pour les flèches (notation vectorielle avec KaTeX)
+    const labelEx = createMathLabel('\\vec{e}_x', '#000000', 60);
+    scene.add(labelEx);
+
+    const labelEy = createMathLabel('\\vec{e}_y', '#000000', 60);
+    scene.add(labelEy);
+
+    const labelEz = createMathLabel('\\vec{e}_z', '#000000', 60);
+    scene.add(labelEz);
+
     // Lignes de projection en pointillés
     const lineMaterial = new THREE.LineDashedMaterial({
         color: 0x666666,
@@ -109,6 +157,16 @@ export function initPointAnimation(containerId) {
         pointLabelX.position.set(params.x, -0.3, 0.3);
         pointLabelY.position.set(0, params.y + 0.3, 0.3);
         pointLabelZ.position.set(0.3, -0.3, params.z);
+
+        // Mise à jour des positions des flèches
+        arrowX.position.set(params.x, params.y, params.z);
+        arrowY.position.set(params.x, params.y, params.z);
+        arrowZ.position.set(params.x, params.y, params.z);
+
+        // Mise à jour des positions des labels des flèches
+        labelEx.position.set(params.x + arrowLength + 0.4, params.y, params.z);
+        labelEy.position.set(params.x, params.y + arrowLength + 0.4, params.z);
+        labelEz.position.set(params.x, params.y, params.z + arrowLength + 0.4);
 
         // Mise à jour des lignes de projection
         // Ligne vers projection sur axe X (de M vers (x, 0, 0))

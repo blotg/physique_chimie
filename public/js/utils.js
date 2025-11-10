@@ -3,6 +3,8 @@
  */
 
 import * as THREE from 'three';
+import katex from 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.mjs';
+import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 /**
  * Crée un sprite de texte pour les labels
@@ -12,27 +14,29 @@ export function createTextLabel(text, color = '#000000') {
     const context = canvas.getContext('2d');
     canvas.width = 128;
     canvas.height = 128;
-    
+
     context.fillStyle = color;
     context.font = '80px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(text, 64, 64);
-    
+
     const texture = new THREE.CanvasTexture(canvas);
     const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(0.5, 0.5, 1);
-    
+
     return sprite;
 }
+
+
 
 /**
  * Crée un axe avec flèche et label
  */
 export function createAxisWithArrow(scene, direction, length, color, labelText) {
     const end = new THREE.Vector3().copy(direction).multiplyScalar(length);
-    
+
     // Ligne de l'axe
     const geometry = new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(0, 0, 0),
@@ -41,12 +45,12 @@ export function createAxisWithArrow(scene, direction, length, color, labelText) 
     const material = new THREE.LineBasicMaterial({ color });
     const axis = new THREE.Line(geometry, material);
     scene.add(axis);
-    
+
     // Flèche
     const arrow = new THREE.ConeGeometry(0.1, 0.3, 8);
     const arrowMesh = new THREE.Mesh(arrow, new THREE.MeshBasicMaterial({ color }));
     arrowMesh.position.copy(end);
-    
+
     // Orienter la flèche selon la direction
     if (direction.x !== 0) {
         arrowMesh.rotation.z = -Math.PI / 2;
@@ -54,7 +58,7 @@ export function createAxisWithArrow(scene, direction, length, color, labelText) 
         arrowMesh.rotation.x = Math.PI / 2;
     }
     scene.add(arrowMesh);
-    
+
     // Label
     const label = createTextLabel(labelText, color);
     const labelPos = new THREE.Vector3().copy(direction).multiplyScalar(length + 0.5);
@@ -100,7 +104,7 @@ export function resizeOrthographicCamera(camera, width, height, frustumSize = 10
     camera.updateProjectionMatrix();
 }
 
-export function resize(renderer, camera, containerId, aspect = 4/3) {
+export function resize(renderer, camera, containerId, aspect = 4 / 3) {
     const container = document.getElementById(containerId);
     const width = container.clientWidth;
     const height = width / aspect;
