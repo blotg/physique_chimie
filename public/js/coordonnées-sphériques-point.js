@@ -46,7 +46,6 @@ export function initAnimation(containerId) {
     );
     animation.scene.add(arrowTheta);
 
-    // Flèche dans la direction Z (bleu)
     const arrowPhi = new THREE.ArrowHelper(
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(0, 0, 0),
@@ -99,13 +98,46 @@ export function initAnimation(containerId) {
     lineToOriginXY.computeLineDistances();
     animation.scene.add(lineToOriginXY);
 
+    // Arc pour l'angle theta (dans le plan vertical contenant le point)
+    const arcMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+    const arcThetaGeometry = new THREE.BufferGeometry();
+    const arcTheta = new THREE.Line(arcThetaGeometry, arcMaterial);
+    animation.scene.add(arcTheta);
+
+    // Flèche pour l'arc theta
+    const arrowThetaCone = new THREE.Mesh(
+        new THREE.ConeGeometry(0.08, 0.15, 16),
+        new THREE.MeshBasicMaterial({ color: 0x000000 })
+    );
+    animation.scene.add(arrowThetaCone);
+
+    // Label pour theta
+    const labelTheta = createKaTeXLabel('\\theta');
+    animation.scene.add(labelTheta);
+
+    // Arc pour l'angle phi (dans le plan XY)
+    const arcPhiGeometry = new THREE.BufferGeometry();
+    const arcPhi = new THREE.Line(arcPhiGeometry, arcMaterial);
+    animation.scene.add(arcPhi);
+
+    // Flèche pour l'arc phi
+    const arrowPhiCone = new THREE.Mesh(
+        new THREE.ConeGeometry(0.08, 0.15, 16),
+        new THREE.MeshBasicMaterial({ color: 0x000000 })
+    );
+    animation.scene.add(arrowPhiCone);
+
+    // Label pour phi
+    const labelPhi = createKaTeXLabel('\\phi');
+    animation.scene.add(labelPhi);
+
 
     // Création de l'interface GUI
     const gui = new GUI({ title: 'Coordonnées du point M' });
     const params = {
         r: 4.0,
-        theta: 50.0,
-        phi: 50.0
+        theta: 45.0,
+        phi: 60.0
     };
 
     container.appendChild(gui.domElement);
@@ -167,6 +199,74 @@ export function initAnimation(containerId) {
             new THREE.Vector3(x, y, 0)
         ]);
         lineToPlanXY.computeLineDistances();
+
+        // Mise à jour de l'arc theta (dans le plan vertical)
+        const arcThetaRadius = 1.0;
+        const arcThetaPoints = [];
+        const thetaRad = THREE.MathUtils.degToRad(params.theta);
+        const phiRad = THREE.MathUtils.degToRad(params.phi);
+        const segments = 32;
+        
+        for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * thetaRad;
+            const px = arcThetaRadius * Math.sin(angle) * Math.cos(phiRad);
+            const py = arcThetaRadius * Math.sin(angle) * Math.sin(phiRad);
+            const pz = arcThetaRadius * Math.cos(angle);
+            arcThetaPoints.push(new THREE.Vector3(px, py, pz));
+        }
+        arcThetaGeometry.setFromPoints(arcThetaPoints);
+
+        // Position et orientation de la flèche theta
+        if (arcThetaPoints.length >= 2) {
+            const lastPoint = arcThetaPoints[arcThetaPoints.length - 1];
+            const secondLastPoint = arcThetaPoints[arcThetaPoints.length - 2];
+            arrowThetaCone.position.copy(lastPoint);
+            
+            const direction = new THREE.Vector3().subVectors(lastPoint, secondLastPoint).normalize();
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+            arrowThetaCone.quaternion.copy(quaternion);
+        }
+
+        // Position du label theta
+        const thetaMidAngle = thetaRad / 2;
+        labelTheta.position.set(
+            arcThetaRadius * 1.3 * Math.sin(thetaMidAngle) * Math.cos(phiRad),
+            arcThetaRadius * 1.3 * Math.sin(thetaMidAngle) * Math.sin(phiRad),
+            arcThetaRadius * 1.3 * Math.cos(thetaMidAngle)
+        );
+
+        // Mise à jour de l'arc phi (dans le plan XY)
+        const arcPhiRadius = 1.0;
+        const arcPhiPoints = [];
+        
+        for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * phiRad;
+            const px = arcPhiRadius * Math.cos(angle);
+            const py = arcPhiRadius * Math.sin(angle);
+            arcPhiPoints.push(new THREE.Vector3(px, py, 0));
+        }
+        arcPhiGeometry.setFromPoints(arcPhiPoints);
+
+        // Position et orientation de la flèche phi
+        if (arcPhiPoints.length >= 2) {
+            const lastPoint = arcPhiPoints[arcPhiPoints.length - 1];
+            const secondLastPoint = arcPhiPoints[arcPhiPoints.length - 2];
+            arrowPhiCone.position.copy(lastPoint);
+            
+            const direction = new THREE.Vector3().subVectors(lastPoint, secondLastPoint).normalize();
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+            arrowPhiCone.quaternion.copy(quaternion);
+        }
+
+        // Position du label phi
+        const phiMidAngle = phiRad / 2;
+        labelPhi.position.set(
+            arcPhiRadius * 1.4 * Math.cos(phiMidAngle),
+            arcPhiRadius * 1.4 * Math.sin(phiMidAngle),
+            -0.2
+        );
     }
 
     // Initialisation

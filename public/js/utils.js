@@ -120,7 +120,8 @@ export class Animation {
             0.1,
             1000
         );
-        this.camera.position.set(8, 8, 4);
+        this.camera.position.set(8, 2, 2);
+        // this.camera.lookAt(0, 4, 4);
         this.camera.up.set(0, 0, 1); // Z vertical
 
         // Lumières
