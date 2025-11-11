@@ -27,7 +27,11 @@
       <!-- Animation 2 : Cube paramétrable -->
       <div class="animation-frame">
         <h2>Volume infinitésimal</h2>
-        <div id="canvas-cube"></div>
+        <div class="animation" id="canvas-cube"></div>
+        <script type="module">
+          import { initCubeAnimation } from "/js/coordonnées-cartésiennes-volume.js";
+          initCubeAnimation("canvas-cube");
+        </script>
       </div>
     </div>
   </body>

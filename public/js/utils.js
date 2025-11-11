@@ -16,7 +16,6 @@ if (typeof document !== 'undefined' && !document.querySelector('link[href*="kate
 }
 
 
-
 export function createTextLabel(text, color = '#000000') {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -123,6 +122,13 @@ export class Animation {
         );
         this.camera.position.set(8, 8, 4);
         this.camera.up.set(0, 0, 1); // Z vertical
+
+        // Lumières
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        this.scene.add(this.ambientLight);
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        this.directionalLight.position.set(5, 10, 5);
+        this.scene.add(this.directionalLight);
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
