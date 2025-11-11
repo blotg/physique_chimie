@@ -178,4 +178,20 @@ export class Animation {
         this.camera.bottom = this.frustumSize * 0.7 / -2;
         this.camera.updateProjectionMatrix();
     }
+    dispose() {
+        this.controls.dispose();
+        this.renderer.dispose();
+        this.labelRenderer.domElement.remove();
+        // Nettoyer la scène
+        this.scene.traverse((object) => {
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) {
+                if (Array.isArray(object.material)) {
+                    object.material.forEach(m => m.dispose());
+                } else {
+                    object.material.dispose();
+                }
+            }
+        });
+    }
 };

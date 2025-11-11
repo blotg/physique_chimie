@@ -8,5 +8,15 @@
     "@std/http": "jsr:@std/http@1",
     "katex": "npm:katex@^0.16.25",
     "three": "npm:three@^0.181.0"
+  },
+  "lint": {
+    "files": {
+      "exclude": ["public/"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "exclude": ["public/"]
+    }
   }
 }

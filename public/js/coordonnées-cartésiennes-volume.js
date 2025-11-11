@@ -53,21 +53,16 @@ export function initCubeAnimation(containerId) {
 
     // Fonction de mise à jour
     function updateCube() {
-        // Recréer la géométrie
-        animation.scene.remove(cube);
-        animation.scene.remove(cubeEdges);
-
-        cubeGeometry = new THREE.BoxGeometry(params.dx, params.dy, params.dz);
+        // Dispose avant de créer
         cube.geometry.dispose();
-        cube.geometry = cubeGeometry;
-        animation.scene.add(cube);
-
-        edgesGeometry = new THREE.EdgesGeometry(cubeGeometry);
         cubeEdges.geometry.dispose();
+        
+        cubeGeometry = new THREE.BoxGeometry(params.dx, params.dy, params.dz);
+        edgesGeometry = new THREE.EdgesGeometry(cubeGeometry);
+        
+        cube.geometry = cubeGeometry;
         cubeEdges.geometry = edgesGeometry;
-        animation.scene.add(cubeEdges);
-
-        // Positionner (x,y,z = coin du cube)
+        
         const centerX = params.x + params.dx / 2;
         const centerY = params.y + params.dy / 2;
         const centerZ = params.z + params.dz / 2;
@@ -80,4 +75,12 @@ export function initCubeAnimation(containerId) {
 
     // Boucle d'animation
     animation.animate();
+    
+    return {
+        animation,
+        dispose: () => {
+            gui.destroy();
+            animation.dispose();
+        }
+    };
 }
