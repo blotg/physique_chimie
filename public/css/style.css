@@ -142,3 +142,26 @@ footer {
 .back-link:hover {
     background: white;
 }
+
+.animation{
+    position: relative;
+}
+
+.lil-gui {
+	--background-color: #f6f6f6;
+	--text-color: #3d3d3d;
+	--title-background-color: #efefef;
+	--title-text-color: #3d3d3d;
+	--widget-color: #eaeaea;
+	--hover-color: #f0f0f0;
+	--focus-color: #fafafa;
+	--number-color: #3d3d3d;
+	--string-color: #3d3d3d;
+}
+
+.lil-gui.root{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}

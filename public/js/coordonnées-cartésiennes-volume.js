@@ -2,9 +2,9 @@
  * Animation 2 : Cube paramétrable
  */
 
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import * as THREE from 'https://esm.sh/three@0.164.1';
+import { OrbitControls } from 'https://esm.sh/three@0.164.1/examples/jsm/controls/OrbitControls.js';
+import { GUI } from 'https://esm.sh/three@0.164.1/examples/jsm/libs/lil-gui.module.min.js';
 import { createCoordinateSystem, createOrthographicCamera, resize } from './utils.js';
 
 export function initCubeAnimation(containerId) {

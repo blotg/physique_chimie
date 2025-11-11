@@ -2,13 +2,21 @@
  * Utilitaires réutilisables pour les animations Three.js
  */
 
-import * as THREE from 'three';
+import * as THREE from 'https://esm.sh/three@0.164.1';
 import katex from 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.mjs';
-import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { CSS2DObject, CSS2DRenderer } from 'https://esm.sh/three@0.164.1/examples/jsm/renderers/CSS2DRenderer.js';
+import { OrbitControls } from 'https://esm.sh/three@0.164.1/examples/jsm/controls/OrbitControls.js';
 
-/**
- * Crée un sprite de texte pour les labels
- */
+// Charger automatiquement le CSS KaTeX
+if (typeof document !== 'undefined' && !document.querySelector('link[href*="katex"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';
+    document.head.appendChild(link);
+}
+
+
+
 export function createTextLabel(text, color = '#000000') {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -94,35 +102,74 @@ export function createCoordinateSystem(scene, length = 5) {
     scene.add(labelZ);
 }
 
-export function createOrthographicCamera() {
-    const camera = new THREE.OrthographicCamera(
-        -1,
-        1,
-        1,
-        -1,
-        0.1,
-        1000
-    );
-    camera.position.set(8, 8, 4);
-    camera.up.set(0, 0, 1); // Z vertical
-    return camera;
-}
 
-export function resizeOrthographicCamera(camera, width, height, frustumSize = 10) {
-    const aspect = width / height;
-    camera.left = frustumSize * aspect / -2;
-    camera.right = frustumSize * aspect / 2;
-    camera.top = frustumSize * 1.3 / 2;
-    camera.bottom = frustumSize * 0.7 / -2;
-    camera.updateProjectionMatrix();
-}
+export class Animation {
+    constructor(container, aspect = 4 / 3, frustumSize = 10) {
+        this.container = container;
+        this.aspect = aspect;
+        this.frustumSize = frustumSize;
+        // Scene
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xffffff);
 
-export function resize(renderer, camera, containerId, aspect = 4 / 3) {
-    const container = document.getElementById(containerId);
-    const width = container.clientWidth;
-    const height = width / aspect;
-    container.height = height;
+        // Caméra
+        this.camera = new THREE.OrthographicCamera(
+            -1,// Dummy values, will be resized later
+            1,
+            1,
+            -1,
+            0.1,
+            1000
+        );
+        this.camera.position.set(8, 8, 4);
+        this.camera.up.set(0, 0, 1); // Z vertical
 
-    renderer.setSize(width, height);
-    resizeOrthographicCamera(camera, width, height);
-}
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.container.appendChild(this.renderer.domElement);
+
+        // Label renderer
+        this.labelRenderer = new CSS2DRenderer();
+        this.labelRenderer.domElement.style.position = 'absolute';
+        this.labelRenderer.domElement.style.top = '0';
+        this.labelRenderer.domElement.style.left = '0';
+        this.labelRenderer.domElement.style.pointerEvents = 'none';
+        this.container.appendChild(this.labelRenderer.domElement);
+
+        // Contrôles
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.2;
+        // Améliorer pour mobile
+        this.controls.touches = {
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+        };
+        this.controls.enableZoom = true;
+        this.controls.enablePan = true;
+
+        new ResizeObserver(() => this.resize()).observe(container);
+
+        this.resize();
+    }
+    animate() {
+        requestAnimationFrame(this.animate.bind(this));
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+        this.labelRenderer.render(this.scene, this.camera);
+    }
+    resize() {
+        const width = this.container.clientWidth;
+        const height = width / this.aspect;
+        this.container.height = height;
+
+        this.renderer.setSize(width, height);
+        this.labelRenderer.setSize(width, height);
+
+        this.camera.left = this.frustumSize * this.aspect / -2;
+        this.camera.right = this.frustumSize * this.aspect / 2;
+        this.camera.top = this.frustumSize * 1.3 / 2;
+        this.camera.bottom = this.frustumSize * 0.7 / -2;
+        this.camera.updateProjectionMatrix();
+    }
+};
