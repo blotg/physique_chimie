@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <title>Animations 3D - Physique</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/animations.css">
+  </head>
+  <body>
+    <a href="/" class="back-link">← Retour</a>
+
+    <div class="container">
+      <h1>Coordonnées sphériques</h1>
+
+      <!-- Animation 1 : Point dans l'espace -->
+      <div class="animation-frame">
+        <h2>Coordonnées d'un point</h2>
+        <div class="animation" id="animation-point"></div>
+        <script type="module">
+          import { initAnimation } from "/js/coordonnées-sphériques-point.js";
+          initAnimation("animation-point");
+        </script>
+      </div>
+
+      <!-- Animation 2 : Cube paramétrable -->
+      <div class="animation-frame">
+        <h2>Volume infinitésimal</h2>
+        <div class="animation" id="animation-volume"></div>
+        <!-- <script type="module">
+          import { initAnimation } from "/js/coordonnées-sphériques-volume.js";
+          initAnimation("animation-volume");
+        </script> -->
+      </div>
+    </div>
+  </body>
+</html>
