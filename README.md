@@ -62,13 +62,16 @@ physique_chimie/
 │   ├── index.html         # Page d'accueil (template)
 │   ├── partials/
 │   │   └── head.html      # En-tête partagé (utilisé partout)
-│   └── animations/
-│       ├── coordonnées-cartésiennes.html
-│       ├── coordonnées-cylindriques.html
-│       └── coordonnées-sphériques.html
-├── public/                # Assets statiques (CSS, JS, images)
+│   ├── animations/
+│   │   ├── coordonnées-cartésiennes.html
+│   │   ├── coordonnées-cylindriques.html
+│   │   └── coordonnées-sphériques.html
+│   └── js/                # Scripts Three.js (importés dans les pages)
+│       ├── coordonnées-cartésiennes-point.js
+│       ├── ...
+│       └── utils.js
+├── public/                # Assets statiques (CSS, images, favicon)
 │   ├── css/
-│   ├── js/
 │   └── images/
 └── dist/                  # Build Vite (généré par `deno task build`)
 ```

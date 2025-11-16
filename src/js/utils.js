@@ -2,10 +2,10 @@
  * Utilitaires réutilisables pour les animations Three.js
  */
 
-import * as THREE from 'https://esm.sh/three@0.164.1';
-import katex from 'https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.mjs';
-import { CSS2DObject, CSS2DRenderer } from 'https://esm.sh/three@0.164.1/examples/jsm/renderers/CSS2DRenderer.js';
-import { OrbitControls } from 'https://esm.sh/three@0.164.1/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import katex from 'katex';
+import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Charger automatiquement le CSS KaTeX
 if (typeof document !== 'undefined' && !document.querySelector('link[href*="katex"]')) {

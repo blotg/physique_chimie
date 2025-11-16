@@ -1,27 +1,20 @@
-import * as THREE from 'https://esm.sh/three@0.164.1';
-import { GUI } from 'https://esm.sh/three@0.164.1/examples/jsm/libs/lil-gui.module.min.js';
-import { createKaTeXLabel, createCoordinateSystem, Animation } from './utils.js';
-
-// Fonction pour convertir coordonnées cylindriques en cartésiennes
-function cylindricalToCartesian(r, theta, z) {
-    return new THREE.Vector3(
-        r * Math.cos(theta),
-        r * Math.sin(theta),
-        z
-    );
-}
+import * as THREE from 'three';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { createCoordinateSystem, Animation, sphericalToCartesian } from './utils.js';
 
 const segments = 60;
 
-// Fonction pour créer un élément de surface à z constant
-function createCylindricalSurfaceElement(r, theta, z, dr, dtheta) {
+// Fonction pour créer un élément de surface sphérique à r constant
+function createSphericalSurfaceElement(r, theta, phi, dtheta, dphi) {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
     const indices = [];
 
     // Conversion en radians
     const thetaRad = theta * Math.PI / 180;
+    const phiRad = phi * Math.PI / 180;
     const dthetaRad = dtheta * Math.PI / 180;
+    const dphiRad = dphi * Math.PI / 180;
 
     let vertexIndex = 0;
 
@@ -30,13 +23,13 @@ function createCylindricalSurfaceElement(r, theta, z, dr, dtheta) {
         return vertexIndex++;
     }
 
-    // Face à z constant (plan horizontal) - arêtes droites en r, courbes en theta
+    // Face à r constant (surface sphérique) - arêtes courbes en theta et phi
     const face = [];
     for (let i = 0; i <= segments; i++) {
         const th = thetaRad + (dthetaRad * i) / segments;
         for (let j = 0; j <= segments; j++) {
-            const radius = r + (dr * j) / segments;
-            const pos = cylindricalToCartesian(radius, th, z);
+            const ph = phiRad + (dphiRad * j) / segments;
+            const pos = sphericalToCartesian(r, th, ph);
             face.push(addVertex(pos.x, pos.y, pos.z));
         }
     }
@@ -58,33 +51,43 @@ function createCylindricalSurfaceElement(r, theta, z, dr, dtheta) {
     return geometry;
 }
 
-// Fonction pour créer les arêtes de la surface à z constant
-function createCylindricalSurfaceEdges(r, theta, z, dr, dtheta) {
+// Fonction pour créer les arêtes de la surface sphérique
+function createSphericalSurfaceEdges(r, theta, phi, dtheta, dphi) {
     const points = [];
 
     // Conversion en radians
     const thetaRad = theta * Math.PI / 180;
+    const phiRad = phi * Math.PI / 180;
     const dthetaRad = dtheta * Math.PI / 180;
+    const dphiRad = dphi * Math.PI / 180;
 
-    // 4 arêtes de la surface horizontale
+    function sphericalToCartesian(rho, th, ph) {
+        return new THREE.Vector3(
+            rho * Math.sin(th) * Math.cos(ph),
+            rho * Math.sin(th) * Math.sin(ph),
+            rho * Math.cos(th)
+        );
+    }
 
-    // 2 arêtes radiales (r varie, theta et z constants)
-    for (const th of [thetaRad, thetaRad + dthetaRad]) {
+    // 4 arêtes de la surface sphérique
+
+    // 2 arêtes en theta (theta varie, r et phi constants)
+    for (const ph of [phiRad, phiRad + dphiRad]) {
         const curve = new THREE.CatmullRomCurve3(
             Array.from({ length: segments + 1 }, (_, i) => {
-                const radius = r + (dr * i) / segments;
-                return cylindricalToCartesian(radius, th, z);
+                const th = thetaRad + (dthetaRad * i) / segments;
+                return sphericalToCartesian(r, th, ph);
             })
         );
         points.push(curve);
     }
 
-    // 2 arêtes en theta (theta varie, r et z constants)
-    for (const radius of [r, r + dr]) {
+    // 2 arêtes en phi (phi varie, r et theta constants)
+    for (const th of [thetaRad, thetaRad + dthetaRad]) {
         const curve = new THREE.CatmullRomCurve3(
             Array.from({ length: segments + 1 }, (_, i) => {
-                const th = thetaRad + (dthetaRad * i) / segments;
-                return cylindricalToCartesian(radius, th, z);
+                const ph = phiRad + (dphiRad * i) / segments;
+                return sphericalToCartesian(r, th, ph);
             })
         );
         points.push(curve);
@@ -99,7 +102,7 @@ export function initAnimation(containerId) {
 
     createCoordinateSystem(animation.scene);
 
-    // Élément de surface à z constant
+    // Élément de surface sphérique
     const surfaceMaterial = new THREE.MeshPhongMaterial({
         color: 0x667eea,
         transparent: true,
@@ -115,7 +118,7 @@ export function initAnimation(containerId) {
 
     // Flèche pour l'orientation de la surface (normale)
     const arrowHelper = new THREE.ArrowHelper(
-        new THREE.Vector3(0, 0, 1), // direction (sera mise à jour)
+        new THREE.Vector3(1, 0, 0), // direction (sera mise à jour)
         new THREE.Vector3(0, 0, 0), // origine (sera mise à jour)
         1.0, // longueur
         0x000000, // couleur noire
@@ -124,28 +127,28 @@ export function initAnimation(containerId) {
     );
     animation.scene.add(arrowHelper);
 
-    // Paramètres pour lil-gui (coordonnées cylindriques)
+    // Paramètres pour lil-gui (coordonnées sphériques)
     const params = {
-        r: 1.5,
-        theta: 30,  // en degrés
-        z: 1.0,
-        dr: 1.0,
-        dtheta: 60 // en degrés
+        r: 3.0,
+        theta: 45,  // en degrés
+        phi: 30,    // en degrés
+        dtheta: 45, // en degrés
+        dphi: 60    // en degrés
     };
 
     // Création de l'interface GUI
-    const gui = new GUI({ title: 'Surface à z constant' });
+    const gui = new GUI({ title: 'Surface sphérique (r constant)' });
     container.appendChild(gui.domElement);
 
     const positionFolder = gui.addFolder('Position');
     positionFolder.add(params, 'r', 0.1, 5, 0.1).name('r').onChange(updateSurface);
-    positionFolder.add(params, 'theta', 0, 360, 1).name('θ (degrés)').onChange(updateSurface);
-    positionFolder.add(params, 'z', -5, 5, 0.1).name('z').onChange(updateSurface);
+    positionFolder.add(params, 'theta', 0, 180, 1).name('θ (degrés)').onChange(updateSurface);
+    positionFolder.add(params, 'phi', 0, 360, 1).name('φ (degrés)').onChange(updateSurface);
     positionFolder.open();
 
     const dimensionsFolder = gui.addFolder('Différentiels');
-    dimensionsFolder.add(params, 'dr', 0.1, 3, 0.1).name('dr').onChange(updateSurface);
-    dimensionsFolder.add(params, 'dtheta', 1, 360, 1).name('dθ (degrés)').onChange(updateSurface);
+    dimensionsFolder.add(params, 'dtheta', 1, 180, 1).name('dθ (degrés)').onChange(updateSurface);
+    dimensionsFolder.add(params, 'dphi', 1, 360, 1).name('dφ (degrés)').onChange(updateSurface);
     dimensionsFolder.open();
 
     // Fonction de mise à jour
@@ -161,13 +164,13 @@ export function initAnimation(containerId) {
             edgesGroup.remove(edge);
         }
         
-        const geometry = createCylindricalSurfaceElement(
-            params.r, params.theta, params.z,
-            params.dr, params.dtheta
+        const geometry = createSphericalSurfaceElement(
+            params.r, params.theta, params.phi,
+            params.dtheta, params.dphi
         );
-        const edgeCurves = createCylindricalSurfaceEdges(
-            params.r, params.theta, params.z,
-            params.dr, params.dtheta
+        const edgeCurves = createSphericalSurfaceEdges(
+            params.r, params.theta, params.phi,
+            params.dtheta, params.dphi
         );
         
         surfaceElement.geometry = geometry;
@@ -183,14 +186,22 @@ export function initAnimation(containerId) {
 
         // Calculer le centre de la surface et la normale
         const thetaRad = params.theta * Math.PI / 180;
+        const phiRad = params.phi * Math.PI / 180;
         const dthetaRad = params.dtheta * Math.PI / 180;
+        const dphiRad = params.dphi * Math.PI / 180;
+        
         const thetaCenter = thetaRad + dthetaRad / 2;
-        const rCenter = params.r + params.dr / 2;
+        const phiCenter = phiRad + dphiRad / 2;
         
-        const centerPos = cylindricalToCartesian(rCenter, thetaCenter, params.z);
+        const centerPos = sphericalToCartesian(params.r, thetaCenter, phiCenter);
         
-        // La normale à une surface à z constant pointe verticalement (vers le haut)
-        const normal = new THREE.Vector3(0, 0, 1);
+        // La normale à une surface sphérique à r constant pointe radialement vers l'extérieur
+        // Elle est simplement le vecteur radial unitaire e_r
+        const normal = new THREE.Vector3(
+            Math.sin(thetaCenter) * Math.cos(phiCenter),
+            Math.sin(thetaCenter) * Math.sin(phiCenter),
+            Math.cos(thetaCenter)
+        ).normalize();
         
         // Mettre à jour la flèche
         arrowHelper.position.copy(centerPos);

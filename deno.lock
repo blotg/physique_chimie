@@ -827,6 +827,8 @@
     ],
     "packageJson": {
       "dependencies": [
+        "npm:katex@~0.16.9",
+        "npm:three@0.181",
         "npm:vite@5"
       ]
     }

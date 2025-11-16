@@ -31,11 +31,21 @@ Pour modifier la structure de l'en-tête (meta, liens, etc.), éditez **une seul
 4. Ajoutez l'entrée correspondante dans `vite.config.ts` (`htmlInputs`)
 5. Relancez `deno task vite:dev` si nécessaire
 
-## 📦 Assets statiques
+## 📦 Scripts & assets
 
-Les scripts Three.js restent dans `public/js/`. Ils sont servis tels quels via `/js/...` et Vite les copie automatiquement dans le build. Pas besoin de les importer dans `src/`.
+- Les scripts Three.js vivent désormais dans `src/js/` (mêmes noms de fichiers qu'avant). Comme ils sont sous `src/`, Vite les bundle automatiquement (tree-shaking, minification, HMR, etc.).
+- Depuis les pages HTML de `src/animations/`, importez-les via un chemin relatif :
+
+```html
+<script type="module">
+	import { initAnimation } from "../js/coordonnées-cartésiennes-point.js";
+	initAnimation("animation-point");
+</script>
+```
+
+- `public/` ne contient plus que les assets statiques purs (CSS, images, favicon...). Ils sont copiés tels quels dans `dist/`.
 
 ## ❓ Dépannage
 
-- **Erreur Rollup "failed to resolve import /js/..."** : vérifiez que le script existe dans `public/js/` et que le chemin commence par `/js/`.
+- **Erreur Vite "Cannot import non-asset file /js/..."** : cela signifie qu'un import pointe encore vers l'ancien dossier `public/js`. Corrigez le chemin en `../js/...` (ou importez directement le module dans un fichier `.ts/.js`).
 - **Le `<head>` ne s'affiche pas** : assurez-vous que le marqueur est bien présent et que le JSON est valide (guillemets doubles).

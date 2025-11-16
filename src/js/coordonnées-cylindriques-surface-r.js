@@ -1,6 +1,6 @@
-import * as THREE from 'https://esm.sh/three@0.164.1';
-import { GUI } from 'https://esm.sh/three@0.164.1/examples/jsm/libs/lil-gui.module.min.js';
-import { createKaTeXLabel, createCoordinateSystem, Animation } from './utils.js';
+import * as THREE from 'three';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { createCoordinateSystem, Animation } from './utils.js';
 
 // Fonction pour convertir coordonnées cylindriques en cartésiennes
 function cylindricalToCartesian(r, theta, z) {
