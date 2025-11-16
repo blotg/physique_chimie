@@ -145,6 +145,7 @@ footer {
 
 .animation{
     position: relative;
+    border-radius: inherit;
 }
 
 .lil-gui {
@@ -165,3 +166,4 @@ footer {
     right: 10px;
     z-index: 1000;
 }
+
