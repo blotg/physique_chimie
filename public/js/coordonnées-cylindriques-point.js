@@ -150,7 +150,7 @@ export function initAnimation(containerId) {
         const eZ = new THREE.Vector3(0, 0, 1);
 
         point.position.set(x, y, z);
-        pointLabel.position.set(x + 0.3, y + 0.3, z + 0.3);
+        pointLabel.position.set(x + 0.3, y - 0.3, z );
 
         // Mise à jour des positions des flèches
         arrowR.setDirection(eR);
