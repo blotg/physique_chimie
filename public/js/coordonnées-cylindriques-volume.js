@@ -11,8 +11,10 @@ function cylindricalToCartesian(r, theta, z) {
     );
 }
 
+const segments = 60;
+
 // Fonction pour créer un élément de volume cylindrique
-function createCylindricalVolumeElement(r, theta, z, dr, dtheta, dz, segments = 20) {
+function createCylindricalVolumeElement(r, theta, z, dr, dtheta, dz) {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
     const indices = [];
@@ -105,7 +107,7 @@ function createCylindricalVolumeElement(r, theta, z, dr, dtheta, dz, segments = 
 }
 
 // Fonction pour créer les arêtes du volume cylindrique
-function createCylindricalVolumeEdges(r, theta, z, dr, dtheta, dz, segments = 20) {
+function createCylindricalVolumeEdges(r, theta, z, dr, dtheta, dz) {
     const points = [];
 
     // Conversion en radians
@@ -229,7 +231,7 @@ export function initAnimation(containerId) {
         // Créer une ligne pour chaque arête
         const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
         edgeCurves.forEach(curve => {
-            const points = curve.getPoints(20);
+            const points = curve.getPoints(segments);
             const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
             const line = new THREE.Line(lineGeometry, edgeMaterial);
             edgesGroup.add(line);
