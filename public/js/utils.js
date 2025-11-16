@@ -196,3 +196,11 @@ export class Animation {
         });
     }
 };
+
+export function sphericalToCartesian(rho, th, ph) {
+    return {
+        x: rho * Math.sin(th) * Math.cos(ph),
+        y: rho * Math.sin(th) * Math.sin(ph),
+        z: rho * Math.cos(th)
+    };
+}
