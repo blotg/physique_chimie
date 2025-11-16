@@ -14,7 +14,6 @@
     <div class="container">
       <h1>Coordonnées sphériques</h1>
 
-      <!-- Animation 1 : Point dans l'espace -->
       <div class="animation-frame">
         <h2>Coordonnées d'un point</h2>
         <div class="animation" id="animation-point"></div>
@@ -24,7 +23,15 @@
         </script>
       </div>
 
-      <!-- Animation 2 : Cube paramétrable -->
+      <div class="animation-frame">
+        <h2>Surface infinitésimale selon r</h2>
+        <div class="animation" id="animation-surface"></div>
+        <script type="module">
+          import { initAnimation } from "/js/coordonnées-sphériques-surface-r.js";
+          initAnimation("animation-surface");
+        </script>
+      </div>
+
       <div class="animation-frame">
         <h2>Volume infinitésimal</h2>
         <div class="animation" id="animation-volume"></div>
