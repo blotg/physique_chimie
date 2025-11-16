@@ -2,7 +2,7 @@ import * as THREE from 'https://esm.sh/three@0.164.1';
 import { GUI } from 'https://esm.sh/three@0.164.1/examples/jsm/libs/lil-gui.module.min.js';
 import { createKaTeXLabel, createCoordinateSystem, Animation } from './utils.js';
 
-export function initCubeAnimation(containerId) {
+export function initAnimation(containerId) {
     const container = document.getElementById(containerId);
     const animation = new Animation(container);
 
@@ -84,3 +84,4 @@ export function initCubeAnimation(containerId) {
         }
     };
 }
+

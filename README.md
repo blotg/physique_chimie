@@ -1,61 +1,110 @@
-# Animations Physique-Chimie avec Deno et Three.js
+# Animations Physique-Chimie avec Deno, Vite et Three.js
 
 Projet d'animations 3D interactives pour illustrer des concepts de physique-chimie.
 
 ## 🚀 Démarrage rapide
 
-### Lancer le serveur de développement
+### Installation
+
+```bash
+npm install
+```
+
+### Développement avec Vite (Recommandé)
+
+Vite permet le hot-reload et sert les fichiers depuis `src/` et `public/` :
+
+```bash
+deno task vite:dev
+```
+
+Le serveur démarre sur http://localhost:8000
+
+**Avantages :**
+- Hot-reload automatique : les modifications sont visibles instantanément
+- Sert les templates depuis `src/` et les assets depuis `public/`
+- En-têtes HTML co-localisés dans `src/animations/`
+- Workflow fluide pour le développement
+
+### Développement avec Deno (Fichiers statiques)
+
+Pour servir directement le dossier `public/` sans hot-reload :
+
 ```bash
 deno task dev
 ```
 
-Le serveur sera accessible sur http://localhost:8000
+### Build pour la production
 
-### Lancer le serveur en production
+Générer le dossier `dist/` prêt pour le déploiement :
+
 ```bash
-deno task start
+deno task build
+```
+
+La commande lance Vite en mode production et produit une version entièrement statique dans `dist/`.
+
+```bash
+npm run preview
+# ou
+deno task vite:preview
 ```
 
 ## 📁 Structure du projet
 
 ```
 physique_chimie/
-├── deno.json              # Configuration Deno et tâches
-├── main.ts                # Serveur HTTP
-├── main_test.ts           # Tests
-└── public/                # Fichiers statiques
-    ├── index.html         # Page d'accueil
-    ├── css/
-    │   └── style.css      # Styles CSS
-    ├── js/                # Scripts JavaScript (futurs)
-    └── animations/        # Pages d'animations
-        └── exemple.html   # Animation exemple avec Three.js
+├── deno.json              # Configuration Deno & tâches (dev/build)
+├── package.json           # Dépendances Vite
+├── vite.config.ts         # Config Vite (multi-pages + partials)
+├── main.ts                # Petit serveur Deno (optionnel)
+├── src/
+│   ├── index.html         # Page d'accueil (template)
+│   ├── partials/
+│   │   └── head.html      # En-tête partagé (utilisé partout)
+│   └── animations/
+│       ├── coordonnées-cartésiennes.html
+│       ├── coordonnées-cylindriques.html
+│       └── coordonnées-sphériques.html
+├── public/                # Assets statiques (CSS, JS, images)
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── dist/                  # Build Vite (généré par `deno task build`)
 ```
 
-## 🎨 Créer une nouvelle animation
+## 🎨 Modifier l'en-tête commun
 
-1. Créez un nouveau fichier HTML dans `public/animations/`
-2. Copiez la structure de `exemple.html` comme point de départ
-3. Modifiez le code Three.js selon vos besoins
-4. Ajoutez un lien vers votre animation dans `public/index.html`
+Chaque page inclut maintenant un marqueur `<!-- #head {...} -->` qui est automatiquement remplacé par le fichier `src/partials/head.html` lors du build ou du dev server. Exemple :
+
+```html
+<!-- #head {"title":"Coordonnées cartésiennes - Animations 3D","animationsCss":true} -->
+```
+
+### Modifier le contenu de l'en-tête
+
+1. Éditez `src/partials/head.html` (une seule fois)
+2. Les modifications sont injectées dans toutes les pages
+3. Vous pouvez ajuster le titre ou ajouter la feuille `animations.css` page par page via le JSON du marqueur (`"animationsCss": true`)
+
+Consultez [GUIDE.md](GUIDE.md) pour les options disponibles.
 
 ## 📚 Ressources
 
 - [Documentation Deno](https://docs.deno.com/)
 - [Documentation Three.js](https://threejs.org/docs/)
-- [Exemples Three.js](https://threejs.org/examples/)
+- [Documentation Vite](https://vitejs.dev/)
 
 ## 🛠️ Technologies
 
 - **Deno**: Runtime JavaScript/TypeScript moderne et sécurisé
+- **Vite**: Build tool et dev server avec hot-reload
 - **Three.js**: Bibliothèque 3D pour le web
 - **HTML/CSS**: Interface utilisateur
 
-## 📝 Idées d'animations
+## 📝 Animations disponibles
 
-- Mouvement des planètes (mécanique céleste)
-- Atomes et molécules (chimie)
-- Ondes et oscillations (physique ondulatoire)
-- Champs électromagnétiques
-- Réactions chimiques
-- Et bien plus encore !
+- ✅ Coordonnées cartésiennes (point)
+- ✅ Coordonnées cylindriques (point, surface r, surface z)
+- ✅ Coordonnées sphériques (point, surface r)
+

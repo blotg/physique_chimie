@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
-    <title>Animations 3D - Physique</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/animations.css">
-  </head>
+  <!-- #head {"title":"Coordonnées cartésiennes - Animations 3D","animationsCss":true} -->
   <body>
     <a href="/" class="back-link">← Retour</a>
 
@@ -19,8 +12,8 @@
         <h2>Coordonnées d'un point</h2>
         <div class="animation" id="animation-point"></div>
         <script type="module">
-          import { initPointAnimation } from "/js/coordonnées-cartésiennes-point.js";
-          initPointAnimation("animation-point");
+          import { initAnimation } from "/js/coordonnées-cartésiennes-point.js";
+          initAnimation("animation-point");
         </script>
       </div>
 
@@ -29,8 +22,8 @@
         <h2>Volume infinitésimal</h2>
         <div class="animation" id="animation-cube"></div>
         <script type="module">
-          import { initCubeAnimation } from "/js/coordonnées-cartésiennes-volume.js";
-          initCubeAnimation("animation-cube");
+          import { initAnimation } from "/js/coordonnées-cartésiennes-volume.js";
+          initAnimation("animation-cube");
         </script>
       </div>
     </div>

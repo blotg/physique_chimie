@@ -1,11 +1,16 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-read --watch main.ts",
-    "start": "deno run --allow-net --allow-read main.ts"
+    "start": "deno run --allow-net --allow-read main.ts",
+    "vite:dev": "deno run -A node_modules/.bin/vite",
+    "vite:build": "deno run -A node_modules/.bin/vite build",
+    "build": "deno run -A node_modules/.bin/vite build",
+    "vite:preview": "deno run -A node_modules/.bin/vite preview"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
     "@std/http": "jsr:@std/http@1",
+    "@std/fs": "jsr:@std/fs@1",
     "katex": "npm:katex@^0.16.25",
     "three": "npm:three@^0.181.0"
   },
