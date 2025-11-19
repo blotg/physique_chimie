@@ -14,11 +14,11 @@ type HeadOptions = {
   animationsCss?: boolean;
 };
 
-function renderHeadTemplate(options: HeadOptions = {}) {
+function renderHeadTemplate(options: HeadOptions = {}, baseUrl: string) {
   const template = readFileSync(partialPath, "utf-8");
   const title = options.title ?? "Animations Physique-Chimie";
   const animationsCssLink = options.animationsCss
-    ? '<link rel="stylesheet" href="/css/animations.css">'
+    ? `<link rel="stylesheet" href="${baseUrl}/css/animations.css">`
     : "";
 
   return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key: string) => {
@@ -27,6 +27,8 @@ function renderHeadTemplate(options: HeadOptions = {}) {
         return title;
       case "animationsCssLink":
         return animationsCssLink;
+      case "baseUrl":
+        return baseUrl;
       default:
         return "";
     }
@@ -37,20 +39,24 @@ function sharedHeadPlugin() {
   return {
     name: "shared-head-partial",
     enforce: "pre" as const,
-    transformIndexHtml(html: string, ctx?: IndexHtmlTransformContext) {
+    transformIndexHtml(html: string, ctx: IndexHtmlTransformContext) {
+      const pathSegments = ctx.path.split('/').filter(Boolean);
+      const depth = pathSegments.length - 1;
+      const baseUrl = depth > 0 ? '../'.repeat(depth).slice(0, -1) : '.';
+
       return html.replace(headMarkerRegex, (_match, jsonConfig) => {
         try {
           const data = JSON.parse(jsonConfig) as HeadOptions;
-          return renderHeadTemplate(data);
+          return renderHeadTemplate(data, baseUrl);
         } catch (error) {
-          ctx?.server?.ws.send({
+          ctx.server?.ws.send({
             type: "error",
             err: {
               message: `Invalid head config: ${error}`,
               stack: String(error),
             },
           });
-          return renderHeadTemplate();
+          return renderHeadTemplate({}, baseUrl);
         }
       });
     },
@@ -66,13 +72,13 @@ const htmlInputs = {
 
 export default defineConfig({
   root: rootDir,
+  base: './',
   publicDir: resolve(__dirname, "public"),
   build: {
     outDir: resolve(__dirname, "dist"),
     emptyOutDir: true,
     rollupOptions: {
       input: htmlInputs,
-      external: (source) => source.startsWith("/js/"),
     },
   },
   server: {
