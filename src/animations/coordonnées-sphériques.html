@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <!-- #head {"title":"Coordonnées sphériques - Animations 3D","animationsCss":true} -->
-  <body>
-    <a href="../" class="back-link">← Retour</a>
+<!-- #head {"title":"Coordonnées sphériques - Animations 3D","animationsCss":true} -->
 
-    <div class="container">
-      <h1>Coordonnées sphériques</h1>
+<body>
+  <a href="../" class="back-link">← Retour</a>
 
-      <div class="animation-frame">
-        <h2>Coordonnées d'un point</h2>
-        <div class="animation" id="animation-point"></div>
-          <script type="module">
-            import { initAnimation } from "../js/coordonnées-sphériques-point.js";
-            initAnimation("animation-point");
-          </script>
-      </div>
+  <div class="container">
+    <h1>Coordonnées sphériques</h1>
 
-      <div class="animation-frame">
-        <h2>Surface infinitésimale selon r</h2>
-        <div class="animation" id="animation-surface"></div>
-          <script type="module">
-            import { initAnimation } from "../js/coordonnées-sphériques-surface-r.js";
-            initAnimation("animation-surface");
-          </script>
-      </div>
-
-      <div class="animation-frame">
-        <h2>Volume infinitésimal</h2>
-        <div class="animation" id="animation-volume"></div>
-          <script type="module">
-            import { initAnimation } from "../js/coordonnées-sphériques-volume.js";
-            initAnimation("animation-volume");
-          </script>
-      </div>
+    <div class="animation-frame">
+      <h2>Coordonnées d'un point</h2>
+      <div class="animation" id="animation-point"></div>
+      <script type="module">
+        import { initAnimation } from "../js/coordonnées-sphériques-point.js";
+        initAnimation("animation-point");
+      </script>
     </div>
-  </body>
+
+    <div class="animation-frame">
+      <h2>Surface infinitésimale selon r</h2>
+      <div class="animation" id="animation-surface"></div>
+      <script type="module">
+        import { initAnimation } from "../js/coordonnées-sphériques-surface-r.js";
+        initAnimation("animation-surface");
+      </script>
+    </div>
+
+    <div class="animation-frame">
+      <h2>Volume infinitésimal</h2>
+      <div class="animation" id="animation-volume"></div>
+      <script type="module">
+        import { initAnimation } from "../js/coordonnées-sphériques-volume.js";
+        initAnimation("animation-volume");
+      </script>
+    </div>
+  </div>
+</body>
+
 </html>

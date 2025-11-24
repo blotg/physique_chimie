@@ -68,6 +68,7 @@ const htmlInputs = {
   cartesiennes: resolve(rootDir, "animations/coordonnées-cartésiennes.html"),
   cylindriques: resolve(rootDir, "animations/coordonnées-cylindriques.html"),
   spheriques: resolve(rootDir, "animations/coordonnées-sphériques.html"),
+  machine_synchrone: resolve(rootDir, "animations/machine-synchrone.html"),
 };
 
 export default defineConfig({
